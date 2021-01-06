@@ -15,5 +15,9 @@ Spring Boot application for a retailer of scale models of classic cars.
 - Spring Security
 - Spring Web
   
-- H2 Database  
+- H2 Database
+  
+- MapStruct 1.4.1.Final
 - Lombok 1.18.12
+- JPA Static Metamodel Generator 5.4.20.Final
+
