@@ -12,7 +12,6 @@ Spring Boot application for a retailer of scale models of classic cars.
   
 - Spring Boot 2.3.3.RELEASE
 - Spring Data JPA
-- Spring Security
 - Spring Web
 
 - Hibernate Validation
