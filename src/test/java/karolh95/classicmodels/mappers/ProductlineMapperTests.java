@@ -19,7 +19,7 @@ public class ProductlineMapperTests {
     private ProductlineMapper mapper;
 
     @Test
-    public void shouldMapProductlineToDtoTest(){
+    public void shouldMapProductlineToDtoTest() {
 
         Productline productline = ProductlineFactory.getProductline();
         ProductlineDTO dto = mapper.productlineToDto(productline);
@@ -32,7 +32,7 @@ public class ProductlineMapperTests {
     }
 
     @Test
-    public void shouldMapDtoToProductlineTest(){
+    public void shouldMapDtoToProductlineTest() {
 
         ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
 
