@@ -2,6 +2,7 @@ package karolh95.classicmodels.services;
 
 import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.exceptions.ProductlineAlreadyExists;
+import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.mappers.ProductlineMapper;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductlineRepository;
@@ -26,5 +27,17 @@ public class ProductlineService {
         return productlineMapper.productlineToDto(productline);
     }
 
+    public ProductlineDTO updateProductline(ProductlineDTO dto){
 
+        Productline productline = findByProductline(dto.getProductLine());
+        productlineMapper.updateProductlineFromDto(dto, productline);
+        productline = productlineRepository.save(productline);
+
+        return productlineMapper.productlineToDto(productline);
+    }
+
+    public Productline findByProductline(String productline){
+        return this.productlineRepository.findById(productline)
+                .orElseThrow(ProductlineNotFoundException::new);
+    }
 }
