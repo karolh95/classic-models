@@ -2,6 +2,7 @@ package karolh95.classicmodels.mappers;
 
 import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.models.Productline;
+import karolh95.classicmodels.utils.ProductlineFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,25 +19,29 @@ public class ProductlineMapperTests {
     private ProductlineMapper mapper;
 
     @Test
-    public void shouldMapProductlineToDto(){
+    public void shouldMapProductlineToDtoTest(){
 
-        final String PRODUCTLINE = "Classic Cars";
-        final String TEXT = "Attention car enthusiasts...";
-        final String HTML = "<p>Attention car enthusiasts...</p>";
-        final byte[] IMAGE = new byte[0];
-
-        Productline productline = new Productline();
-        productline.setProductLine(PRODUCTLINE);
-        productline.setTextDescription(TEXT);
-        productline.setHtmlDescription(HTML);
-        productline.setImage(IMAGE);
-
+        Productline productline = ProductlineFactory.getProductline();
         ProductlineDTO dto = mapper.productlineToDto(productline);
 
-        assertNotNull(dto, "Dto should not be null");
-        assertEquals(PRODUCTLINE, dto.getProductLine(), "ProductLine should match");
-        assertEquals(TEXT, dto.getTextDescription(), "Text description should match");
-        assertEquals(HTML, dto.getHtmlDescription(), "Html description should match");
-        assertArrayEquals(IMAGE, dto.getImage(), "Image should match");
+        assertNotNull(dto);
+        assertEquals(productline.getProductLine(), dto.getProductLine());
+        assertEquals(productline.getTextDescription(), dto.getTextDescription());
+        assertEquals(productline.getHtmlDescription(), dto.getHtmlDescription());
+        assertArrayEquals(productline.getImage(), dto.getImage());
+    }
+
+    @Test
+    public void shouldMapDtoToProductlineTest(){
+
+        ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
+
+        Productline productline = mapper.dtoToProductline(dto);
+
+        assertNotNull(productline);
+        assertEquals(dto.getProductLine(), productline.getProductLine());
+        assertEquals(dto.getTextDescription(), productline.getTextDescription());
+        assertEquals(dto.getHtmlDescription(), productline.getHtmlDescription());
+        assertArrayEquals(dto.getImage(), productline.getImage());
     }
 }
