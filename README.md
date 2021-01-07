@@ -14,6 +14,8 @@ Spring Boot application for a retailer of scale models of classic cars.
 - Spring Data JPA
 - Spring Security
 - Spring Web
+
+- Hibernate Validation
   
 - H2 Database
   
