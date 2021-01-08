@@ -4,11 +4,17 @@ import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.services.ProductlineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(ProductlineController.MAPPING)
@@ -27,5 +33,11 @@ public class ProductlineController {
     @GetMapping("{productLine}")
     public ProductlineDTO getProductline(@PathVariable String productLine) {
         return productlineService.findProductlineByProductLine(productLine);
+    }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ProductlineDTO saveProductline(@RequestPart ProductlineDTO dto, @RequestPart MultipartFile file) throws IOException {
+        dto.setImage(file.getBytes());
+        return productlineService.saveProductline(dto);
     }
 }
