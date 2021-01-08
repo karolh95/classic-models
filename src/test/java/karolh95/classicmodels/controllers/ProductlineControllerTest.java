@@ -86,7 +86,8 @@ public class ProductlineControllerTest {
                 .findProductlineByProductLine(anyString());
 
         mvc.perform(get(API + "/productline"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
     }
 
     @Test
@@ -115,7 +116,8 @@ public class ProductlineControllerTest {
                 .saveProductline(any(ProductlineDTO.class));
 
         mvc.perform(saveProductline(dto))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(status().reason(ProductlineAlreadyExists.MESSAGE));
     }
 
     private MockMultipartHttpServletRequestBuilder saveProductline(ProductlineDTO dto) throws Exception {

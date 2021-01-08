@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = ProductlineAlreadyExists.MESSAGE)
 public class ProductlineAlreadyExists extends RuntimeException {
 
-    static final String MESSAGE = "Productline already exists";
+    public static final String MESSAGE = "Productline already exists";
 
     public ProductlineAlreadyExists(){
         super(MESSAGE);
