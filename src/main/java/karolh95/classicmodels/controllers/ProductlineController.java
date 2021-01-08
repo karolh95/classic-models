@@ -5,6 +5,7 @@ import karolh95.classicmodels.services.ProductlineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +20,12 @@ public class ProductlineController {
     private final ProductlineService productlineService;
 
     @GetMapping
-    public Page<ProductlineDTO> getAllProductLines(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+    public Page<ProductlineDTO> getAllProductLines(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return productlineService.findAllProductlines(page, size);
+    }
+
+    @GetMapping("{productLine}")
+    public ProductlineDTO getProductline(@PathVariable String productLine) {
+        return productlineService.findProductlineByProductLine(productLine);
     }
 }

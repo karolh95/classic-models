@@ -87,9 +87,9 @@ public class ProductlineServiceTests {
 
         assertNotNull(dto);
 
-        Productline productline = productlineService.findByProductline(dto.getProductLine());
+        ProductlineDTO productlineDto = productlineService.findProductlineByProductLine(dto.getProductLine());
 
-        assertNotNull(productline);
+        assertNotNull(productlineDto);
     }
 
 }

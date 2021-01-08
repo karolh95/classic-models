@@ -1,6 +1,7 @@
 package karolh95.classicmodels.controllers;
 
 import karolh95.classicmodels.dto.ProductlineDTO;
+import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.services.ProductlineService;
 import karolh95.classicmodels.utils.ProductlineFactory;
 import org.junit.Test;
@@ -17,7 +18,9 @@ import java.util.List;
 
 import static karolh95.classicmodels.utils.ResultMatcherAdapter.equalTo;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,5 +55,30 @@ public class ProductlineControllerTest {
                 .andExpect(equalTo("totalElements", list.size()))
                 .andExpect(equalTo("size", PAGE_REQUEST.getPageSize()))
                 .andExpect(equalTo("number", PAGE_REQUEST.getPageNumber()));
+    }
+
+    @Test
+    public void getProductlineByProductLineTest() throws Exception {
+
+        ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
+        doReturn(dto).when(service)
+                .findProductlineByProductLine(anyString());
+
+        mvc.perform(get(API + "/productline"))
+                .andExpect(status().isOk())
+                .andExpect(equalTo("productLine", dto.getProductLine()))
+                .andExpect(equalTo("textDescription", dto.getTextDescription()))
+                .andExpect(equalTo("htmlDescription", dto.getHtmlDescription()));
+    }
+
+    @Test
+    public void getProductlineByProductLine_productlineNotFoundTest() throws Exception {
+
+        doThrow(ProductlineNotFoundException.class).when(service)
+                .findProductlineByProductLine(anyString());
+
+        mvc.perform(get(API + "/productline"))
+                .andExpect(status().isNotFound());
+
     }
 }

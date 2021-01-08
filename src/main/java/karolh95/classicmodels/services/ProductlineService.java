@@ -39,14 +39,19 @@ public class ProductlineService {
         return productlineMapper.productlineToDto(productline);
     }
 
-    public Productline findByProductline(String productline){
-        return this.productlineRepository.findById(productline)
-                .orElseThrow(ProductlineNotFoundException::new);
+    public ProductlineDTO findProductlineByProductLine(String productLine) {
+        Productline productline = findByProductline(productLine);
+        return productlineMapper.productlineToDto(productline);
     }
 
     public Page<ProductlineDTO> findAllProductlines(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return productlineRepository.findAll(pageable)
                 .map(productlineMapper::productlineToDto);
+    }
+
+    private Productline findByProductline(String productline) {
+        return this.productlineRepository.findById(productline)
+                .orElseThrow(ProductlineNotFoundException::new);
     }
 }
