@@ -50,6 +50,10 @@ public class ProductlineService {
                 .map(productlineMapper::productlineToDto);
     }
 
+    public byte[] getImageByProductLine(String productLine){
+        return findByProductline(productLine).getImage();
+    }
+
     private Productline findByProductline(String productline) {
         return this.productlineRepository.findById(productline)
                 .orElseThrow(ProductlineNotFoundException::new);

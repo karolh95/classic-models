@@ -40,4 +40,9 @@ public class ProductlineController {
         dto.setImage(file.getBytes());
         return productlineService.saveProductline(dto);
     }
+
+    @GetMapping(value = "{productLine}/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getImage(@PathVariable String productLine){
+        return productlineService.getImageByProductLine(productLine);
+    }
 }

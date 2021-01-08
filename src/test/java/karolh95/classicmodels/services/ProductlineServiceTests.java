@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -143,4 +144,34 @@ public class ProductlineServiceTests {
                 () -> productlineService.findProductlineByProductLine("productLine")
         );
     }
+
+    @Test
+    public void shouldFindImageTest() {
+
+        Productline productline = ProductlineFactory.getProductline();
+
+        doReturn(Optional.of(productline))
+                .when(productlineRepository)
+                .findById(anyString());
+
+        assertDoesNotThrow(() -> {
+            byte[] image = productlineService.getImageByProductLine("productLine");
+
+            assertArrayEquals(productline.getImage(), image);
+        });
+    }
+
+    @Test
+    public void shouldNotFindImageTest() {
+
+        doThrow(ProductlineNotFoundException.class)
+                .when(productlineRepository)
+                .findById(anyString());
+
+        assertThrows(
+                ProductlineNotFoundException.class,
+                () -> productlineService.getImageByProductLine("productLine")
+        );
+    }
+
 }

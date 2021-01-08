@@ -29,6 +29,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
@@ -118,6 +119,32 @@ public class ProductlineControllerTests {
         mvc.perform(saveProductline(dto))
                 .andExpect(status().isBadRequest())
                 .andExpect(status().reason(ProductlineAlreadyExists.MESSAGE));
+    }
+
+    @Test
+    public void getProductlineImageTest() throws Exception {
+
+        byte[] image = new byte[10];
+        doReturn(image)
+                .when(service)
+                .getImageByProductLine(anyString());
+
+        mvc.perform(get(API + "/productLine/image"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG))
+                .andExpect(content().bytes(image));
+    }
+
+    @Test
+    public void getProductlineImage_ProductlineNotFoundTest() throws Exception {
+
+        doThrow(ProductlineNotFoundException.class)
+                .when(service)
+                .getImageByProductLine(anyString());
+
+        mvc.perform(get(API + "/productLine/image"))
+                .andExpect(status().isNotFound())
+                .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
     }
 
     private MockMultipartHttpServletRequestBuilder saveProductline(ProductlineDTO dto) throws Exception {
