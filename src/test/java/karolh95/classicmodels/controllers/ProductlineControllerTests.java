@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @RunWith(SpringRunner.class)
-public class ProductlineControllerTest {
+public class ProductlineControllerTests {
 
     private static final String API = "/" + ProductlineController.MAPPING;
     private static final PageRequest PAGE_REQUEST = PageRequest.of(0, 10);
