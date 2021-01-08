@@ -7,6 +7,9 @@ import karolh95.classicmodels.mappers.ProductlineMapper;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductlineRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +19,7 @@ public class ProductlineService {
     private final ProductlineRepository productlineRepository;
     private final ProductlineMapper productlineMapper;
 
-    public ProductlineDTO saveProductline(ProductlineDTO dto){
+    public ProductlineDTO saveProductline(ProductlineDTO dto) {
 
         if (productlineRepository.existsById(dto.getProductLine()))
             throw new ProductlineAlreadyExists();
@@ -27,7 +30,7 @@ public class ProductlineService {
         return productlineMapper.productlineToDto(productline);
     }
 
-    public ProductlineDTO updateProductline(ProductlineDTO dto){
+    public ProductlineDTO updateProductline(ProductlineDTO dto) {
 
         Productline productline = findByProductline(dto.getProductLine());
         productlineMapper.updateProductlineFromDto(dto, productline);
@@ -39,5 +42,11 @@ public class ProductlineService {
     public Productline findByProductline(String productline){
         return this.productlineRepository.findById(productline)
                 .orElseThrow(ProductlineNotFoundException::new);
+    }
+
+    public Page<ProductlineDTO> findAllProductlines(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productlineRepository.findAll(pageable)
+                .map(productlineMapper::productlineToDto);
     }
 }
