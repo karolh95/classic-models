@@ -150,8 +150,8 @@ public class ProductlineControllerTests {
     private MockMultipartHttpServletRequestBuilder saveProductline(ProductlineDTO dto) throws Exception {
 
         String body = mapper.writeValueAsString(dto);
-        MockMultipartFile productlineDto = new MockMultipartFile("dto", "", MediaType.APPLICATION_JSON_VALUE, body.getBytes());
-        MockMultipartFile image = new MockMultipartFile("file", dto.getImage());
+        MockMultipartFile productlineDto = new MockMultipartFile("productline", "", MediaType.APPLICATION_JSON_VALUE, body.getBytes());
+        MockMultipartFile image = new MockMultipartFile("image", dto.getImage());
 
         return multipart(API)
                 .file(productlineDto)

@@ -36,9 +36,9 @@ public class ProductlineController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ProductlineDTO saveProductline(@RequestPart ProductlineDTO dto, @RequestPart MultipartFile file) throws IOException {
-        dto.setImage(file.getBytes());
-        return productlineService.saveProductline(dto);
+    public ProductlineDTO saveProductline(@RequestPart ProductlineDTO productline, @RequestPart MultipartFile image) throws IOException {
+        productline.setImage(image.getBytes());
+        return productlineService.saveProductline(productline);
     }
 
     @GetMapping(value = "{productLine}/image", produces = MediaType.IMAGE_JPEG_VALUE)
