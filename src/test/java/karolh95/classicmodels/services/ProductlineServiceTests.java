@@ -86,7 +86,7 @@ public class ProductlineServiceTests {
         dto.setHtmlDescription(newHTML);
         dto.setImage(newIMAGE);
 
-        ProductlineDTO result = productlineService.updateProductline(dto);
+        ProductlineDTO result = productlineService.updateProductline(dto.getProductLine(), dto);
 
         assertNotNull(dto);
         assertEquals(dto.getTextDescription(), result.getTextDescription());
@@ -103,7 +103,7 @@ public class ProductlineServiceTests {
 
         assertThrows(
                 ProductlineNotFoundException.class,
-                () -> productlineService.updateProductline(dto)
+                () -> productlineService.updateProductline(dto.getProductLine(), dto)
         );
     }
 

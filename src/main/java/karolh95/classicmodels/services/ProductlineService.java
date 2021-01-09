@@ -30,9 +30,9 @@ public class ProductlineService {
         return productlineMapper.productlineToDto(productline);
     }
 
-    public ProductlineDTO updateProductline(ProductlineDTO dto) {
+    public ProductlineDTO updateProductline(String id, ProductlineDTO dto) {
 
-        Productline productline = findByProductline(dto.getProductLine());
+        Productline productline = findByProductline(id);
         productlineMapper.updateProductlineFromDto(dto, productline);
         productline = productlineRepository.save(productline);
 

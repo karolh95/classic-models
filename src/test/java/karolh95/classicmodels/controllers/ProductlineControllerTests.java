@@ -18,6 +18,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.util.List;
 
@@ -147,6 +148,31 @@ public class ProductlineControllerTests {
                 .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
     }
 
+    @Test
+    public void updateProductlineTest() throws Exception {
+
+        ProductlineDTO productlineDTO = ProductlineFactory.getPoductlineDto();
+        doReturn(productlineDTO)
+                .when(service)
+                .updateProductline(anyString(), any(ProductlineDTO.class));
+
+        mvc.perform(updateProductline(productlineDTO))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateProductline_ProductlineNotFoundTest() throws Exception {
+
+        ProductlineDTO productlineDTO = ProductlineFactory.getPoductlineDto();
+        doThrow(ProductlineNotFoundException.class)
+                .when(service)
+                .updateProductline(anyString(), any(ProductlineDTO.class));
+
+        mvc.perform(updateProductline(productlineDTO))
+                .andExpect(status().isNotFound())
+                .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
+    }
+
     private MockMultipartHttpServletRequestBuilder saveProductline(ProductlineDTO dto) throws Exception {
 
         String body = mapper.writeValueAsString(dto);
@@ -155,6 +181,22 @@ public class ProductlineControllerTests {
 
         return multipart(API)
                 .file(productlineDto)
+                .file(image);
+    }
+
+    private MockMultipartHttpServletRequestBuilder updateProductline(ProductlineDTO dto) throws Exception {
+
+        String content = mapper.writeValueAsString(dto);
+        MockMultipartFile producktline = new MockMultipartFile("productline", "", MediaType.APPLICATION_JSON_VALUE, content.getBytes());
+        MockMultipartFile image = new MockMultipartFile("image", dto.getImage());
+
+        MockMultipartHttpServletRequestBuilder builder = multipart(API + "/" + dto.getProductLine());
+        builder.with(request -> {
+            request.setMethod("PUT");
+            return request;
+        });
+
+        return builder.file(producktline)
                 .file(image);
     }
 }
