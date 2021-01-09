@@ -25,6 +25,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -174,4 +176,30 @@ public class ProductlineServiceTests {
         );
     }
 
+    @Test
+    public void shouldDeleteProductline() {
+
+        Productline productline = ProductlineFactory.getProductline();
+        doReturn(Optional.of(productline))
+                .when(productlineRepository)
+                .findById(anyString());
+
+        productlineService.deleteProductline(productline.getProductLine());
+
+        verify(productlineRepository, times(1))
+                .delete(any(Productline.class));
+    }
+
+    @Test
+    public void shouldNotDeleteProductline_productlineNotFoundTest() {
+
+        doReturn(Optional.empty())
+                .when(productlineRepository)
+                .findById(anyString());
+
+        assertThrows(
+                ProductlineNotFoundException.class,
+                () -> productlineService.deleteProductline("productLine")
+        );
+    }
 }

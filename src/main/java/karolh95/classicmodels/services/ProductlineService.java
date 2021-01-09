@@ -50,8 +50,13 @@ public class ProductlineService {
                 .map(productlineMapper::productlineToDto);
     }
 
-    public byte[] getImageByProductLine(String productLine){
+    public byte[] getImageByProductLine(String productLine) {
         return findByProductline(productLine).getImage();
+    }
+
+    public void deleteProductline(String productLine) {
+        Productline productline = findByProductline(productLine);
+        productlineRepository.delete(productline);
     }
 
     private Productline findByProductline(String productline) {

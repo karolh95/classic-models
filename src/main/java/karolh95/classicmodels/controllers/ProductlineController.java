@@ -4,6 +4,7 @@ import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.services.ProductlineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,5 +45,11 @@ public class ProductlineController {
     @GetMapping(value = "{productLine}/image", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImage(@PathVariable String productLine) {
         return productlineService.getImageByProductLine(productLine);
+    }
+
+    @DeleteMapping("{productLine}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProductline(@PathVariable String productLine) {
+        productlineService.deleteProductline(productLine);
     }
 }

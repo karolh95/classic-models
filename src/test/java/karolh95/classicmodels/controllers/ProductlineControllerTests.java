@@ -18,7 +18,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.util.List;
 
@@ -26,8 +25,10 @@ import static karolh95.classicmodels.utils.ResultMatcherAdapter.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -169,6 +170,29 @@ public class ProductlineControllerTests {
                 .updateProductline(anyString(), any(ProductlineDTO.class));
 
         mvc.perform(updateProductline(productlineDTO))
+                .andExpect(status().isNotFound())
+                .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
+    }
+
+    @Test
+    public void deleteProductline() throws Exception {
+
+        doNothing()
+                .when(service)
+                .deleteProductline(anyString());
+
+        mvc.perform(delete(API + "/productLine"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteProductline_productlineNotFoundTest() throws Exception {
+
+        doThrow(ProductlineNotFoundException.class)
+                .when(service)
+                .deleteProductline(anyString());
+
+        mvc.perform(delete(API + "/productLine"))
                 .andExpect(status().isNotFound())
                 .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
     }
