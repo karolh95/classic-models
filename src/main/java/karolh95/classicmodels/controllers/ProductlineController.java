@@ -4,6 +4,7 @@ import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.services.ProductlineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class ProductlineController {
     private final ProductlineService productlineService;
 
     @GetMapping
-    public Page<ProductlineDTO> getAllProductLines(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return productlineService.findAllProductlines(page, size);
+    public Page<ProductlineDTO> getAllProductLines(Pageable pageable) {
+        return productlineService.findAllProductlines(pageable);
     }
 
     @GetMapping("{productLine}")

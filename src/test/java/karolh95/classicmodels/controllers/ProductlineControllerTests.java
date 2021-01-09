@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,7 +24,6 @@ import java.util.List;
 
 import static karolh95.classicmodels.utils.ResultMatcherAdapter.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -55,7 +55,7 @@ public class ProductlineControllerTests {
 
         doReturn(new PageImpl<>(list, PAGE_REQUEST, list.size()))
                 .when(service)
-                .findAllProductlines(anyInt(), anyInt());
+                .findAllProductlines(any(Pageable.class));
 
         mvc.perform(get(API))
                 .andExpect(status().isOk())
