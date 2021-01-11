@@ -23,29 +23,29 @@ public class ProductlineService {
         if (productlineRepository.existsById(dto.getProductLine()))
             throw new ProductlineAlreadyExists();
 
-        Productline productline = productlineMapper.dtoToProductline(dto);
+        Productline productline = productlineMapper.map(dto);
         productline = productlineRepository.save(productline);
 
-        return productlineMapper.productlineToDto(productline);
+        return productlineMapper.map(productline);
     }
 
     public ProductlineDTO updateProductline(String id, ProductlineDTO dto) {
 
         Productline productline = findByProductline(id);
-        productlineMapper.updateProductlineFromDto(dto, productline);
+        productlineMapper.update(dto, productline);
         productline = productlineRepository.save(productline);
 
-        return productlineMapper.productlineToDto(productline);
+        return productlineMapper.map(productline);
     }
 
     public ProductlineDTO findProductlineByProductLine(String productLine) {
         Productline productline = findByProductline(productLine);
-        return productlineMapper.productlineToDto(productline);
+        return productlineMapper.map(productline);
     }
 
     public Page<ProductlineDTO> findAllProductlines(Pageable pageable) {
         return productlineRepository.findAll(pageable)
-                .map(productlineMapper::productlineToDto);
+                .map(productlineMapper::map);
     }
 
     public byte[] getImageByProductLine(String productLine) {

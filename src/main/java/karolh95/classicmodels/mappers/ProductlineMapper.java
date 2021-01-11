@@ -10,10 +10,10 @@ import org.mapstruct.MappingTarget;
 @Mapper
 public interface ProductlineMapper {
 
-    ProductlineDTO productlineToDto(Productline productline);
+    ProductlineDTO map(Productline productline);
 
-    Productline dtoToProductline(ProductlineDTO productlineDTO);
+    Productline map(ProductlineDTO productlineDTO);
 
     @Mapping(target = Productline_.PRODUCT_LINE, ignore = true)
-    void updateProductlineFromDto(ProductlineDTO dto, @MappingTarget Productline productline);
+    void update(ProductlineDTO dto, @MappingTarget Productline productline);
 }

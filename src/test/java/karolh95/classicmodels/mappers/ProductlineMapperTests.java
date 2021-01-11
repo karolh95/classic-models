@@ -25,7 +25,7 @@ public class ProductlineMapperTests {
     public void shouldMapProductlineToDtoTest() {
 
         Productline productline = ProductlineFactory.getProductline();
-        ProductlineDTO dto = mapper.productlineToDto(productline);
+        ProductlineDTO dto = mapper.map(productline);
 
         assertNotNull(dto);
         assertEquals(productline.getProductLine(), dto.getProductLine());
@@ -39,7 +39,7 @@ public class ProductlineMapperTests {
 
         ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
 
-        Productline productline = mapper.dtoToProductline(dto);
+        Productline productline = mapper.map(dto);
 
         assertNotNull(productline);
         assertEquals(dto.getProductLine(), productline.getProductLine());
@@ -57,14 +57,14 @@ public class ProductlineMapperTests {
         final byte[] NEW_IMAGE = new byte[2];
 
         Productline productline = ProductlineFactory.getProductline();
-        ProductlineDTO dto = mapper.productlineToDto(productline);
+        ProductlineDTO dto = mapper.map(productline);
 
         dto.setProductLine(NEW_PRODUCTLINE);
         dto.setTextDescription(NEW_TEXT);
         dto.setHtmlDescription(NEW_HTML);
         dto.setImage(NEW_IMAGE);
 
-        mapper.updateProductlineFromDto(dto, productline);
+        mapper.update(dto, productline);
 
         assertNotEquals(NEW_PRODUCTLINE, productline.getProductLine());
 
