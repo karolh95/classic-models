@@ -3,18 +3,15 @@ package karolh95.classicmodels.mappers;
 import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.utils.ProductlineFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ProductlineMapperTests {
 

@@ -6,8 +6,7 @@ import karolh95.classicmodels.exceptions.ProductlineAlreadyExists;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.services.ProductlineService;
 import karolh95.classicmodels.utils.ProductlineFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
@@ -35,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
-@RunWith(SpringRunner.class)
 public class ProductlineControllerTests {
 
     private static final String API = "/" + ProductlineController.MAPPING;

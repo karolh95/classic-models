@@ -6,13 +6,11 @@ import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductlineRepository;
 import karolh95.classicmodels.utils.ProductlineFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
@@ -28,7 +26,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ProductlineServiceTests {
 
@@ -40,7 +37,7 @@ public class ProductlineServiceTests {
 
     private ProductlineDTO dto;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         dto = ProductlineFactory.getPoductlineDto();
     }
