@@ -211,7 +211,7 @@ public class ProductlineControllerTests {
     private MockMultipartHttpServletRequestBuilder updateProductline(ProductlineDTO dto) throws Exception {
 
         String content = mapper.writeValueAsString(dto);
-        MockMultipartFile producktline = new MockMultipartFile("productline", "", MediaType.APPLICATION_JSON_VALUE, content.getBytes());
+        MockMultipartFile productline = new MockMultipartFile("productline", "", MediaType.APPLICATION_JSON_VALUE, content.getBytes());
         MockMultipartFile image = new MockMultipartFile("image", dto.getImage());
 
         MockMultipartHttpServletRequestBuilder builder = multipart(API + "/" + dto.getProductLine());
@@ -220,7 +220,7 @@ public class ProductlineControllerTests {
             return request;
         });
 
-        return builder.file(producktline)
+        return builder.file(productline)
                 .file(image);
     }
 }
