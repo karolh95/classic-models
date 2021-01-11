@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
@@ -57,7 +58,7 @@ public class ProductlineController {
     @ApiResponse(responseCode = "200", description = "Product line has been created successfully.")
     @ApiResponse(responseCode = "400", description = "Product line already exists", content = @Content)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ProductlineDTO saveProductline(@RequestPart ProductlineDTO productline, @RequestPart MultipartFile image) throws IOException {
+    public ProductlineDTO saveProductline(@Valid @RequestPart ProductlineDTO productline, @RequestPart MultipartFile image) throws IOException {
         productline.setImage(image.getBytes());
         return productlineService.saveProductline(productline);
     }
@@ -67,7 +68,7 @@ public class ProductlineController {
     @ApiResponse(responseCode = "200", description = "Product line has been updated successfully.")
     @ApiResponse(responseCode = "404", description = "Product line not found", content = @Content)
     @PutMapping(value = "{productLine}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ProductlineDTO updateProductline(@PathVariable String productLine, @RequestPart ProductlineDTO productline, @RequestPart MultipartFile image) throws IOException {
+    public ProductlineDTO updateProductline(@PathVariable String productLine, @Valid @RequestPart ProductlineDTO productline, @RequestPart MultipartFile image) throws IOException {
         productline.setImage(image.getBytes());
         return productlineService.updateProductline(productLine, productline);
     }
