@@ -1,7 +1,7 @@
 package karolh95.classicmodels.services;
 
 import karolh95.classicmodels.dto.ProductlineDTO;
-import karolh95.classicmodels.exceptions.ProductlineAlreadyExists;
+import karolh95.classicmodels.exceptions.ProductlineAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.mappers.ProductlineMapper;
 import karolh95.classicmodels.models.Productline;
@@ -21,7 +21,7 @@ public class ProductlineService {
     public ProductlineDTO saveProductline(ProductlineDTO dto) {
 
         if (productlineRepository.existsById(dto.getProductLine()))
-            throw new ProductlineAlreadyExists();
+            throw new ProductlineAlreadyExistsException();
 
         Productline productline = productlineMapper.map(dto);
         productline = productlineRepository.save(productline);

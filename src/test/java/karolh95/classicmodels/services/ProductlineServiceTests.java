@@ -1,7 +1,7 @@
 package karolh95.classicmodels.services;
 
 import karolh95.classicmodels.dto.ProductlineDTO;
-import karolh95.classicmodels.exceptions.ProductlineAlreadyExists;
+import karolh95.classicmodels.exceptions.ProductlineAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductlineRepository;
@@ -114,7 +114,7 @@ public class ProductlineServiceTests {
                 .existsById(anyString());
 
         assertThrows(
-                ProductlineAlreadyExists.class,
+                ProductlineAlreadyExistsException.class,
                 () -> productlineService.saveProductline(dto)
         );
     }

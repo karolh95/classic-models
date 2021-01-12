@@ -2,7 +2,7 @@ package karolh95.classicmodels.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import karolh95.classicmodels.dto.ProductlineDTO;
-import karolh95.classicmodels.exceptions.ProductlineAlreadyExists;
+import karolh95.classicmodels.exceptions.ProductlineAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.services.ProductlineService;
 import karolh95.classicmodels.utils.ProductlineFactory;
@@ -111,13 +111,13 @@ public class ProductlineControllerTests {
 
         ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
 
-        doThrow(ProductlineAlreadyExists.class)
+        doThrow(ProductlineAlreadyExistsException.class)
                 .when(service)
                 .saveProductline(any(ProductlineDTO.class));
 
         mvc.perform(saveProductline(dto))
                 .andExpect(status().isBadRequest())
-                .andExpect(status().reason(ProductlineAlreadyExists.MESSAGE));
+                .andExpect(status().reason(ProductlineAlreadyExistsException.MESSAGE));
     }
 
     @Test
