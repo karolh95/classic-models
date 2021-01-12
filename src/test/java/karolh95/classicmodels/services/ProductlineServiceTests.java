@@ -43,7 +43,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldSaveProductline() {
+    public void saveProductlineTest() {
 
         Productline productline = ProductlineFactory.getProductline();
         doReturn(false)
@@ -63,7 +63,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldUpdateProductline() {
+    public void updateProductlineTest() {
 
         final String newTEXT = "new text description";
         final String newHTML = "new HTML description";
@@ -94,7 +94,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldNotUpdateProductline_notExists() {
+    public void updateProductline_productlineNotFoundTest() {
 
         doReturn(Optional.empty())
                 .when(productlineRepository)
@@ -107,7 +107,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldNotSaveProductline_alreadyExists() {
+    public void saveProductline_productlineAlreadyExistsTest() {
 
         doReturn(true)
                 .when(productlineRepository)
@@ -120,7 +120,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldFindProductline() {
+    public void findProductlineTest() {
 
         doReturn(Optional.of(ProductlineFactory.getProductline()))
                 .when(productlineRepository)
@@ -132,7 +132,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldNotFindProductline() {
+    public void findProductline_ProductlineNotFoundTest() {
 
         doReturn(Optional.empty())
                 .when(productlineRepository)
@@ -145,7 +145,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldFindImageTest() {
+    public void findImageTest() {
 
         Productline productline = ProductlineFactory.getProductline();
 
@@ -161,7 +161,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldNotFindImageTest() {
+    public void findImage_productlineNotFoundTest() {
 
         doThrow(ProductlineNotFoundException.class)
                 .when(productlineRepository)
@@ -174,7 +174,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldDeleteProductline() {
+    public void deleteProductlineTest() {
 
         Productline productline = ProductlineFactory.getProductline();
         doReturn(Optional.of(productline))
@@ -188,7 +188,7 @@ public class ProductlineServiceTests {
     }
 
     @Test
-    public void shouldNotDeleteProductline_productlineNotFoundTest() {
+    public void deleteProductline_productlineNotFoundTest() {
 
         doReturn(Optional.empty())
                 .when(productlineRepository)
