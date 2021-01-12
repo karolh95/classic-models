@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.services.ProductlineService;
 import karolh95.classicmodels.utils.ProductlineFactory;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -23,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
+@DisplayName("Productline Validation Tests")
 public class ProductlineValidationTests {
 
     private static final String API = "/" + ProductlineController.MAPPING;
@@ -58,7 +60,7 @@ public class ProductlineValidationTests {
         return dto;
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "[{index}] validated field: {1},expected error: {2}")
     @MethodSource("invalidProductlines")
     public void saveProductline(ProductlineDTO dto, String field, String expectedError) throws Exception {
 
@@ -69,7 +71,7 @@ public class ProductlineValidationTests {
                 .andExpect(equalTo(field, message));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "[{index}] validated field: {1},expected error: {2}")
     @MethodSource("invalidProductlines")
     public void updateProductline(ProductlineDTO dto, String field, String expectedError) throws Exception {
 

@@ -6,6 +6,8 @@ import karolh95.classicmodels.exceptions.ProductlineAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.services.ProductlineService;
 import karolh95.classicmodels.utils.ProductlineFactory;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,10 +35,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
+@DisplayName("Productline Controller Tests")
 public class ProductlineControllerTests {
 
     private static final String API = "/" + ProductlineController.MAPPING;
-    private static final PageRequest PAGE_REQUEST = PageRequest.of(0, 10);
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
@@ -46,6 +48,8 @@ public class ProductlineControllerTests {
 
     @Test
     public void getAllProductlinesTest() throws Exception {
+
+        PageRequest PAGE_REQUEST = PageRequest.of(0, 10);
 
         ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
         List<ProductlineDTO> list = List.of(dto, dto, dto);
@@ -65,159 +69,184 @@ public class ProductlineControllerTests {
                 .andExpect(equalTo("number", PAGE_REQUEST.getPageNumber()));
     }
 
-    @Test
-    public void getProductlineByProductLineTest() throws Exception {
+    @Nested
+    @DisplayName("getProductlineByProductLine")
+    class GetProductlineByProductLineTests {
 
-        ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
-        doReturn(dto).when(service)
-                .findProductlineByProductLine(anyString());
+        @Test
+        public void getProductlineByProductLineTest() throws Exception {
 
-        mvc.perform(get(API + "/productline"))
-                .andExpect(status().isOk())
-                .andExpect(equalTo("productLine", dto.getProductLine()))
-                .andExpect(equalTo("textDescription", dto.getTextDescription()))
-                .andExpect(equalTo("htmlDescription", dto.getHtmlDescription()));
+            ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
+            doReturn(dto).when(service)
+                    .findProductlineByProductLine(anyString());
+
+            mvc.perform(get(API + "/productline"))
+                    .andExpect(status().isOk())
+                    .andExpect(equalTo("productLine", dto.getProductLine()))
+                    .andExpect(equalTo("textDescription", dto.getTextDescription()))
+                    .andExpect(equalTo("htmlDescription", dto.getHtmlDescription()));
+        }
+
+        @Test
+        public void getProductlineByProductLine_productlineNotFoundTest() throws Exception {
+
+            doThrow(ProductlineNotFoundException.class).when(service)
+                    .findProductlineByProductLine(anyString());
+
+            mvc.perform(get(API + "/productline"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
+        }
     }
 
-    @Test
-    public void getProductlineByProductLine_productlineNotFoundTest() throws Exception {
+    @Nested
+    @DisplayName("saveProductline")
+    class SaveProductlineTests {
 
-        doThrow(ProductlineNotFoundException.class).when(service)
-                .findProductlineByProductLine(anyString());
+        @Test
+        public void saveProductlineTest() throws Exception {
 
-        mvc.perform(get(API + "/productline"))
-                .andExpect(status().isNotFound())
-                .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
+            ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
+
+            doReturn(dto)
+                    .when(service)
+                    .saveProductline(any(ProductlineDTO.class));
+
+            mvc.perform(saveProductline(dto))
+                    .andExpect(status().isOk())
+                    .andExpect(equalTo("productLine", dto.getProductLine()))
+                    .andExpect(equalTo("textDescription", dto.getTextDescription()))
+                    .andExpect(equalTo("htmlDescription", dto.getHtmlDescription()));
+        }
+
+        @Test
+        public void saveProductline_alreadyExistsTest() throws Exception {
+
+            ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
+
+            doThrow(ProductlineAlreadyExistsException.class)
+                    .when(service)
+                    .saveProductline(any(ProductlineDTO.class));
+
+            mvc.perform(saveProductline(dto))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(status().reason(ProductlineAlreadyExistsException.MESSAGE));
+        }
+
+        private MockMultipartHttpServletRequestBuilder saveProductline(ProductlineDTO dto) throws Exception {
+
+            String body = mapper.writeValueAsString(dto);
+            MockMultipartFile productlineDto = new MockMultipartFile("productline", "", MediaType.APPLICATION_JSON_VALUE, body.getBytes());
+            MockMultipartFile image = new MockMultipartFile("image", dto.getImage());
+
+            return multipart(API)
+                    .file(productlineDto)
+                    .file(image);
+        }
     }
 
-    @Test
-    public void saveProductlineTest() throws Exception {
+    @Nested
+    @DisplayName("getProductlineImage")
+    class GetProductlineImageTests {
 
-        ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
+        @Test
+        public void getProductlineImageTest() throws Exception {
 
-        doReturn(dto)
-                .when(service)
-                .saveProductline(any(ProductlineDTO.class));
+            byte[] image = new byte[10];
+            doReturn(image)
+                    .when(service)
+                    .getImageByProductLine(anyString());
 
-        mvc.perform(saveProductline(dto))
-                .andExpect(status().isOk())
-                .andExpect(equalTo("productLine", dto.getProductLine()))
-                .andExpect(equalTo("textDescription", dto.getTextDescription()))
-                .andExpect(equalTo("htmlDescription", dto.getHtmlDescription()));
+            mvc.perform(get(API + "/productLine/image"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.IMAGE_JPEG))
+                    .andExpect(content().bytes(image));
+        }
+
+        @Test
+        public void getProductlineImage_ProductlineNotFoundTest() throws Exception {
+
+            doThrow(ProductlineNotFoundException.class)
+                    .when(service)
+                    .getImageByProductLine(anyString());
+
+            mvc.perform(get(API + "/productLine/image"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
+        }
     }
 
-    @Test
-    public void saveProductline_alreadyExistsTest() throws Exception {
+    @Nested
+    @DisplayName("updateProductline")
+    class UpdateProductlineTests {
 
-        ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
+        @Test
+        public void updateProductlineTest() throws Exception {
 
-        doThrow(ProductlineAlreadyExistsException.class)
-                .when(service)
-                .saveProductline(any(ProductlineDTO.class));
+            ProductlineDTO productlineDTO = ProductlineFactory.getPoductlineDto();
+            doReturn(productlineDTO)
+                    .when(service)
+                    .updateProductline(anyString(), any(ProductlineDTO.class));
 
-        mvc.perform(saveProductline(dto))
-                .andExpect(status().isBadRequest())
-                .andExpect(status().reason(ProductlineAlreadyExistsException.MESSAGE));
+            mvc.perform(updateProductline(productlineDTO))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        public void updateProductline_ProductlineNotFoundTest() throws Exception {
+
+            ProductlineDTO productlineDTO = ProductlineFactory.getPoductlineDto();
+            doThrow(ProductlineNotFoundException.class)
+                    .when(service)
+                    .updateProductline(anyString(), any(ProductlineDTO.class));
+
+            mvc.perform(updateProductline(productlineDTO))
+                    .andExpect(status().isNotFound())
+                    .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
+        }
+
+        private MockMultipartHttpServletRequestBuilder updateProductline(ProductlineDTO dto) throws Exception {
+
+            String content = mapper.writeValueAsString(dto);
+            MockMultipartFile productline = new MockMultipartFile("productline", "", MediaType.APPLICATION_JSON_VALUE, content.getBytes());
+            MockMultipartFile image = new MockMultipartFile("image", dto.getImage());
+
+            MockMultipartHttpServletRequestBuilder builder = multipart(API + "/" + dto.getProductLine());
+            builder.with(request -> {
+                request.setMethod("PUT");
+                return request;
+            });
+
+            return builder.file(productline)
+                    .file(image);
+        }
     }
 
-    @Test
-    public void getProductlineImageTest() throws Exception {
+    @Nested
+    @DisplayName("deleteProductline")
+    class DeleteProductlineTests {
 
-        byte[] image = new byte[10];
-        doReturn(image)
-                .when(service)
-                .getImageByProductLine(anyString());
+        @Test
+        public void deleteProductline() throws Exception {
 
-        mvc.perform(get(API + "/productLine/image"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.IMAGE_JPEG))
-                .andExpect(content().bytes(image));
-    }
+            doNothing()
+                    .when(service)
+                    .deleteProductline(anyString());
 
-    @Test
-    public void getProductlineImage_ProductlineNotFoundTest() throws Exception {
+            mvc.perform(delete(API + "/productLine"))
+                    .andExpect(status().isNoContent());
+        }
 
-        doThrow(ProductlineNotFoundException.class)
-                .when(service)
-                .getImageByProductLine(anyString());
+        @Test
+        public void deleteProductline_productlineNotFoundTest() throws Exception {
 
-        mvc.perform(get(API + "/productLine/image"))
-                .andExpect(status().isNotFound())
-                .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
-    }
+            doThrow(ProductlineNotFoundException.class)
+                    .when(service)
+                    .deleteProductline(anyString());
 
-    @Test
-    public void updateProductlineTest() throws Exception {
-
-        ProductlineDTO productlineDTO = ProductlineFactory.getPoductlineDto();
-        doReturn(productlineDTO)
-                .when(service)
-                .updateProductline(anyString(), any(ProductlineDTO.class));
-
-        mvc.perform(updateProductline(productlineDTO))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void updateProductline_ProductlineNotFoundTest() throws Exception {
-
-        ProductlineDTO productlineDTO = ProductlineFactory.getPoductlineDto();
-        doThrow(ProductlineNotFoundException.class)
-                .when(service)
-                .updateProductline(anyString(), any(ProductlineDTO.class));
-
-        mvc.perform(updateProductline(productlineDTO))
-                .andExpect(status().isNotFound())
-                .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
-    }
-
-    @Test
-    public void deleteProductline() throws Exception {
-
-        doNothing()
-                .when(service)
-                .deleteProductline(anyString());
-
-        mvc.perform(delete(API + "/productLine"))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    public void deleteProductline_productlineNotFoundTest() throws Exception {
-
-        doThrow(ProductlineNotFoundException.class)
-                .when(service)
-                .deleteProductline(anyString());
-
-        mvc.perform(delete(API + "/productLine"))
-                .andExpect(status().isNotFound())
-                .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
-    }
-
-    private MockMultipartHttpServletRequestBuilder saveProductline(ProductlineDTO dto) throws Exception {
-
-        String body = mapper.writeValueAsString(dto);
-        MockMultipartFile productlineDto = new MockMultipartFile("productline", "", MediaType.APPLICATION_JSON_VALUE, body.getBytes());
-        MockMultipartFile image = new MockMultipartFile("image", dto.getImage());
-
-        return multipart(API)
-                .file(productlineDto)
-                .file(image);
-    }
-
-    private MockMultipartHttpServletRequestBuilder updateProductline(ProductlineDTO dto) throws Exception {
-
-        String content = mapper.writeValueAsString(dto);
-        MockMultipartFile productline = new MockMultipartFile("productline", "", MediaType.APPLICATION_JSON_VALUE, content.getBytes());
-        MockMultipartFile image = new MockMultipartFile("image", dto.getImage());
-
-        MockMultipartHttpServletRequestBuilder builder = multipart(API + "/" + dto.getProductLine());
-        builder.with(request -> {
-            request.setMethod("PUT");
-            return request;
-        });
-
-        return builder.file(productline)
-                .file(image);
+            mvc.perform(delete(API + "/productLine"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(status().reason(ProductlineNotFoundException.MESSAGE));
+        }
     }
 }

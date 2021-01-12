@@ -3,6 +3,7 @@ package karolh95.classicmodels.mappers;
 import karolh95.classicmodels.dto.ProductDto;
 import karolh95.classicmodels.models.Product;
 import karolh95.classicmodels.utils.ProductFactory;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@DisplayName("Product Mapper Tests")
 public class ProductMapperTests {
 
     @Autowired

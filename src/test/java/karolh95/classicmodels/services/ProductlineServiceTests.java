@@ -7,6 +7,8 @@ import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductlineRepository;
 import karolh95.classicmodels.utils.ProductlineFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
+@DisplayName("Productline Service Tests")
 public class ProductlineServiceTests {
 
     @Autowired
@@ -35,168 +38,203 @@ public class ProductlineServiceTests {
     @MockBean
     private ProductlineRepository productlineRepository;
 
-    private ProductlineDTO dto;
+    @Nested
+    @DisplayName("saveProductline")
+    class SaveProductlineTests {
 
-    @BeforeEach
-    public void setUp() {
-        dto = ProductlineFactory.getPoductlineDto();
+        private ProductlineDTO dto;
+
+        @BeforeEach
+        public void setUp() {
+            dto = ProductlineFactory.getPoductlineDto();
+        }
+
+        @Test
+        public void saveProductlineTest() {
+
+            Productline productline = ProductlineFactory.getProductline();
+            doReturn(false)
+                    .when(productlineRepository)
+                    .existsById(anyString());
+            doReturn(productline)
+                    .when(productlineRepository)
+                    .save(any(Productline.class));
+
+            dto = productlineService.saveProductline(dto);
+
+            assertNotNull(dto);
+            assertEquals(productline.getProductLine(), dto.getProductLine());
+            assertEquals(productline.getTextDescription(), dto.getTextDescription());
+            assertEquals(productline.getHtmlDescription(), dto.getHtmlDescription());
+            assertArrayEquals(productline.getImage(), dto.getImage());
+        }
+
+        @Test
+        public void saveProductline_productlineAlreadyExistsTest() {
+
+            doReturn(true)
+                    .when(productlineRepository)
+                    .existsById(anyString());
+
+            assertThrows(
+                    ProductlineAlreadyExistsException.class,
+                    () -> productlineService.saveProductline(dto)
+            );
+        }
+
     }
 
-    @Test
-    public void saveProductlineTest() {
+    @Nested
+    @DisplayName("updateProductline")
+    class UpdateProductlineTests {
 
-        Productline productline = ProductlineFactory.getProductline();
-        doReturn(false)
-                .when(productlineRepository)
-                .existsById(anyString());
-        doReturn(productline)
-                .when(productlineRepository)
-                .save(any(Productline.class));
+        private ProductlineDTO dto;
 
-        dto = productlineService.saveProductline(dto);
+        @BeforeEach
+        public void setUp() {
+            dto = ProductlineFactory.getPoductlineDto();
+        }
 
-        assertNotNull(dto);
-        assertEquals(productline.getProductLine(), dto.getProductLine());
-        assertEquals(productline.getTextDescription(), dto.getTextDescription());
-        assertEquals(productline.getHtmlDescription(), dto.getHtmlDescription());
-        assertArrayEquals(productline.getImage(), dto.getImage());
+
+        @Test
+        public void updateProductlineTest() {
+
+            final String newTEXT = "new text description";
+            final String newHTML = "new HTML description";
+            final byte[] newIMAGE = new byte[5];
+
+            Productline productline = ProductlineFactory.getProductline();
+            productline.setTextDescription(newTEXT);
+            productline.setHtmlDescription(newHTML);
+            productline.setImage(newIMAGE);
+
+            doReturn(Optional.of(ProductlineFactory.getProductline()))
+                    .when(productlineRepository)
+                    .findById(anyString());
+            doReturn(productline)
+                    .when(productlineRepository)
+                    .save(any(Productline.class));
+
+            dto.setTextDescription(newTEXT);
+            dto.setHtmlDescription(newHTML);
+            dto.setImage(newIMAGE);
+
+            ProductlineDTO result = productlineService.updateProductline(dto.getProductLine(), dto);
+
+            assertNotNull(dto);
+            assertEquals(dto.getTextDescription(), result.getTextDescription());
+            assertEquals(dto.getHtmlDescription(), result.getHtmlDescription());
+            assertArrayEquals(dto.getImage(), result.getImage());
+        }
+
+        @Test
+        public void updateProductline_productlineNotFoundTest() {
+
+            doReturn(Optional.empty())
+                    .when(productlineRepository)
+                    .findById(anyString());
+
+            assertThrows(
+                    ProductlineNotFoundException.class,
+                    () -> productlineService.updateProductline(dto.getProductLine(), dto)
+            );
+        }
     }
 
-    @Test
-    public void updateProductlineTest() {
+    @Nested
+    @DisplayName("findProductline")
+    class FindProductlineTests {
 
-        final String newTEXT = "new text description";
-        final String newHTML = "new HTML description";
-        final byte[] newIMAGE = new byte[5];
+        @Test
+        public void findProductlineTest() {
 
-        Productline productline = ProductlineFactory.getProductline();
-        productline.setTextDescription(newTEXT);
-        productline.setHtmlDescription(newHTML);
-        productline.setImage(newIMAGE);
+            ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
+            doReturn(Optional.of(ProductlineFactory.getProductline()))
+                    .when(productlineRepository)
+                    .findById(anyString());
 
-        doReturn(Optional.of(ProductlineFactory.getProductline()))
-                .when(productlineRepository)
-                .findById(anyString());
-        doReturn(productline)
-                .when(productlineRepository)
-                .save(any(Productline.class));
+            assertDoesNotThrow(
+                    () -> productlineService.findProductlineByProductLine(dto.getProductLine())
+            );
+        }
 
-        dto.setTextDescription(newTEXT);
-        dto.setHtmlDescription(newHTML);
-        dto.setImage(newIMAGE);
+        @Test
+        public void findProductline_ProductlineNotFoundTest() {
 
-        ProductlineDTO result = productlineService.updateProductline(dto.getProductLine(), dto);
+            doReturn(Optional.empty())
+                    .when(productlineRepository)
+                    .findById(anyString());
 
-        assertNotNull(dto);
-        assertEquals(dto.getTextDescription(), result.getTextDescription());
-        assertEquals(dto.getHtmlDescription(), result.getHtmlDescription());
-        assertArrayEquals(dto.getImage(), result.getImage());
+            assertThrows(
+                    ProductlineNotFoundException.class,
+                    () -> productlineService.findProductlineByProductLine("productLine")
+            );
+        }
     }
 
-    @Test
-    public void updateProductline_productlineNotFoundTest() {
+    @Nested
+    @DisplayName("findImage")
+    class FindImageTests {
 
-        doReturn(Optional.empty())
-                .when(productlineRepository)
-                .findById(anyString());
+        @Test
+        public void findImageTest() {
 
-        assertThrows(
-                ProductlineNotFoundException.class,
-                () -> productlineService.updateProductline(dto.getProductLine(), dto)
-        );
+            Productline productline = ProductlineFactory.getProductline();
+
+            doReturn(Optional.of(productline))
+                    .when(productlineRepository)
+                    .findById(anyString());
+
+            assertDoesNotThrow(() -> {
+                byte[] image = productlineService.getImageByProductLine("productLine");
+
+                assertArrayEquals(productline.getImage(), image);
+            });
+        }
+
+        @Test
+        public void findImage_productlineNotFoundTest() {
+
+            doThrow(ProductlineNotFoundException.class)
+                    .when(productlineRepository)
+                    .findById(anyString());
+
+            assertThrows(
+                    ProductlineNotFoundException.class,
+                    () -> productlineService.getImageByProductLine("productLine")
+            );
+        }
     }
 
-    @Test
-    public void saveProductline_productlineAlreadyExistsTest() {
+    @Nested
+    @DisplayName("deleteProductline")
+    class DeleteProductlineTests {
 
-        doReturn(true)
-                .when(productlineRepository)
-                .existsById(anyString());
+        @Test
+        public void deleteProductlineTest() {
 
-        assertThrows(
-                ProductlineAlreadyExistsException.class,
-                () -> productlineService.saveProductline(dto)
-        );
-    }
+            Productline productline = ProductlineFactory.getProductline();
+            doReturn(Optional.of(productline))
+                    .when(productlineRepository)
+                    .findById(anyString());
 
-    @Test
-    public void findProductlineTest() {
+            productlineService.deleteProductline(productline.getProductLine());
 
-        doReturn(Optional.of(ProductlineFactory.getProductline()))
-                .when(productlineRepository)
-                .findById(anyString());
+            verify(productlineRepository, times(1))
+                    .delete(any(Productline.class));
+        }
 
-        assertDoesNotThrow(
-                () -> productlineService.findProductlineByProductLine(dto.getProductLine())
-        );
-    }
+        @Test
+        public void deleteProductline_productlineNotFoundTest() {
 
-    @Test
-    public void findProductline_ProductlineNotFoundTest() {
+            doReturn(Optional.empty())
+                    .when(productlineRepository)
+                    .findById(anyString());
 
-        doReturn(Optional.empty())
-                .when(productlineRepository)
-                .findById(anyString());
-
-        assertThrows(
-                ProductlineNotFoundException.class,
-                () -> productlineService.findProductlineByProductLine("productLine")
-        );
-    }
-
-    @Test
-    public void findImageTest() {
-
-        Productline productline = ProductlineFactory.getProductline();
-
-        doReturn(Optional.of(productline))
-                .when(productlineRepository)
-                .findById(anyString());
-
-        assertDoesNotThrow(() -> {
-            byte[] image = productlineService.getImageByProductLine("productLine");
-
-            assertArrayEquals(productline.getImage(), image);
-        });
-    }
-
-    @Test
-    public void findImage_productlineNotFoundTest() {
-
-        doThrow(ProductlineNotFoundException.class)
-                .when(productlineRepository)
-                .findById(anyString());
-
-        assertThrows(
-                ProductlineNotFoundException.class,
-                () -> productlineService.getImageByProductLine("productLine")
-        );
-    }
-
-    @Test
-    public void deleteProductlineTest() {
-
-        Productline productline = ProductlineFactory.getProductline();
-        doReturn(Optional.of(productline))
-                .when(productlineRepository)
-                .findById(anyString());
-
-        productlineService.deleteProductline(productline.getProductLine());
-
-        verify(productlineRepository, times(1))
-                .delete(any(Productline.class));
-    }
-
-    @Test
-    public void deleteProductline_productlineNotFoundTest() {
-
-        doReturn(Optional.empty())
-                .when(productlineRepository)
-                .findById(anyString());
-
-        assertThrows(
-                ProductlineNotFoundException.class,
-                () -> productlineService.deleteProductline("productLine")
-        );
+            assertThrows(
+                    ProductlineNotFoundException.class,
+                    () -> productlineService.deleteProductline("productLine")
+            );
+        }
     }
 }

@@ -3,6 +3,7 @@ package karolh95.classicmodels.mappers;
 import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.utils.ProductlineFactory;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,13 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@DisplayName("Productline Mapper Tests")
 public class ProductlineMapperTests {
 
     @Autowired
     private ProductlineMapper mapper;
 
     @Test
-    public void shouldMapProductlineToDtoTest() {
+    public void mapProductlineToDtoTest() {
 
         Productline productline = ProductlineFactory.getProductline();
         ProductlineDTO dto = mapper.map(productline);
@@ -32,7 +34,7 @@ public class ProductlineMapperTests {
     }
 
     @Test
-    public void shouldMapDtoToProductlineTest() {
+    public void mapDtoToProductlineTest() {
 
         ProductlineDTO dto = ProductlineFactory.getPoductlineDto();
 
@@ -46,7 +48,7 @@ public class ProductlineMapperTests {
     }
 
     @Test
-    public void shouldUpdateProductlineFromDto() {
+    public void updateProductlineFromDto() {
 
         final String NEW_PRODUCTLINE = "new productline";
         final String NEW_TEXT = "new text";
