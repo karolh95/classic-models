@@ -49,4 +49,20 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = Product_.PRODUCT_LINE)
     private Productline productline;
+
+    public String getProductLine() {
+        return productLine;
+    }
+
+    public void setProductLine(String productLine) {
+        this.productLine = productLine;
+    }
+
+    public Productline getProductline() {
+        return productline;
+    }
+
+    public void setProductline(Productline productline) {
+        this.productline = productline;
+    }
 }
