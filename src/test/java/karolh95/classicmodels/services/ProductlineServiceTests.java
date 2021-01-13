@@ -3,8 +3,10 @@ package karolh95.classicmodels.services;
 import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.exceptions.ProductlineAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
+import karolh95.classicmodels.models.Product;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductlineRepository;
+import karolh95.classicmodels.utils.ProductFactory;
 import karolh95.classicmodels.utils.ProductlineFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,17 +18,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @DisplayName("Productline Service Tests")
@@ -234,6 +229,41 @@ public class ProductlineServiceTests {
             assertThrows(
                     ProductlineNotFoundException.class,
                     () -> productlineService.deleteProductline("productLine")
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("setProductline")
+    class SetProductlineTests {
+
+        @Test
+        public void setProductlineTest() {
+
+            Productline productline = ProductlineFactory.getProductline();
+            doReturn(Optional.of(productline))
+                    .when(productlineRepository)
+                    .findById(anyString());
+            Product product = ProductFactory.getProduct();
+
+            productlineService.setProductline("productLine", product);
+
+            Productline newProductline = product.getProductline();
+            assertNotNull(newProductline);
+            assertEquals(productline, newProductline);
+        }
+
+        @Test
+        public void setProductline_productlineNotFoundTest() {
+
+            doReturn(Optional.empty())
+                    .when(productlineRepository)
+                    .findById(anyString());
+            Product product = ProductFactory.getProduct();
+
+            assertThrows(
+                    ProductlineNotFoundException.class,
+                    () -> productlineService.setProductline("productLine", product)
             );
         }
     }

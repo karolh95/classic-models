@@ -23,7 +23,7 @@ import static karolh95.classicmodels.utils.ResultMatcherAdapter.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(ProductlineController.class)
 @DisplayName("Productline Validation Tests")
 public class ProductlineValidationTests {
 
