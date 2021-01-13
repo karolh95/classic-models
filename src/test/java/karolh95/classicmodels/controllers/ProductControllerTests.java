@@ -23,6 +23,7 @@ import static karolh95.classicmodels.utils.ResultMatcherAdapter.equalTo;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -129,6 +130,36 @@ public class ProductControllerTests {
             return post(API)
                     .content(content)
                     .contentType(MediaType.APPLICATION_JSON);
+        }
+    }
+
+    @Nested
+    @DisplayName("findProduct")
+    class FindProductTests {
+
+        private static final String API = "/api/productlines/productLine/products/productCode";
+
+        @Test
+        public void findProductTest() throws Exception {
+
+            doReturn(ProductFactory.getProductDto())
+                    .when(productService)
+                    .findProductByProductCode(anyString());
+
+            mvc.perform(get(API))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        public void findProduct_productNotFoundTest() throws Exception {
+
+            doThrow(ProductNotFoundException.class)
+                    .when(productService)
+                    .findProductByProductCode(anyString());
+
+            mvc.perform(get(API))
+                    .andExpect(status().isNotFound())
+                    .andExpect(status().reason(ProductNotFoundException.MESSAGE));
         }
     }
 }

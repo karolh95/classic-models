@@ -21,4 +21,9 @@ public class ProductController {
     public ProductDto updateProduct(@PathVariable String productLine, @PathVariable String productCode, @RequestBody ProductDto productDto) {
         return productService.updateProduct(productCode, productDto);
     }
+
+    @GetMapping("productlines/{productLine}/products/{productCode}")
+    public ProductDto getProduct(@PathVariable String productLine, @PathVariable String productCode) {
+        return productService.findProductByProductCode(productCode);
+    }
 }

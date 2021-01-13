@@ -144,4 +144,34 @@ public class ProductServiceTests {
             );
         }
     }
+
+    @Nested
+    @DisplayName("findProductByProductCode")
+    class FindProductByProductCodeTests {
+
+        @Test
+        public void findProductByProductCodeTest() {
+
+            doReturn(Optional.of(ProductFactory.getProduct()))
+                    .when(productRepository)
+                    .findById(anyString());
+
+            ProductDto productDto = productService.findProductByProductCode("productCode");
+
+            assertNotNull(productDto);
+        }
+
+        @Test
+        public void findProductByProductCode_productNotFoundTest() {
+
+            doReturn(Optional.empty())
+                    .when(productRepository)
+                    .findById(anyString());
+
+            assertThrows(
+                    ProductNotFoundException.class,
+                    () -> productService.findProductByProductCode("productCode")
+            );
+        }
+    }
 }

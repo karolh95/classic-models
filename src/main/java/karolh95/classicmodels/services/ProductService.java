@@ -38,6 +38,11 @@ public class ProductService {
         return productMapper.map(product);
     }
 
+    public ProductDto findProductByProductCode(String productCode) {
+        Product product = findByProductCode(productCode);
+        return productMapper.map(product);
+    }
+
     private Product findByProductCode(String productCode) {
         return productRepository.findById(productCode)
                 .orElseThrow(ProductNotFoundException::new);
