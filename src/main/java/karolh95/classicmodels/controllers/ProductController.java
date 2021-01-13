@@ -16,4 +16,9 @@ public class ProductController {
     public ProductDto saveProduct(@PathVariable String productLine, @RequestBody ProductDto product) {
         return productService.saveProduct(productLine, product);
     }
+
+    @PostMapping("productlines/{productLine}/products/{productCode}")
+    public ProductDto updateProduct(@PathVariable String productLine, @PathVariable String productCode, @RequestBody ProductDto productDto) {
+        return productService.updateProduct(productCode, productDto);
+    }
 }

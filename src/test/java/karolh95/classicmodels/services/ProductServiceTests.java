@@ -2,6 +2,7 @@ package karolh95.classicmodels.services;
 
 import karolh95.classicmodels.dto.ProductDto;
 import karolh95.classicmodels.exceptions.ProductAlreadyExistsException;
+import karolh95.classicmodels.exceptions.ProductNotFoundException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.models.Product;
 import karolh95.classicmodels.repositories.ProductRepository;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -96,6 +99,48 @@ public class ProductServiceTests {
             assertThrows(
                     ProductlineNotFoundException.class,
                     () -> productService.saveProduct("productLine", productDto)
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("updateProduct")
+    class UpdateProductTests {
+
+        @Test
+        public void updateProductTest() {
+
+            String newProductName = "new product name";
+            Product product = ProductFactory.getProduct();
+            product.setProductName(newProductName);
+
+            doReturn(Optional.of(ProductFactory.getProduct()))
+                    .when(productRepository)
+                    .findById(anyString());
+            doReturn(product)
+                    .when(productRepository)
+                    .save(any(Product.class));
+
+            ProductDto productDto = ProductFactory.getProductDto();
+            productDto.setProductName(newProductName);
+
+            productDto = productService.updateProduct("productCode", productDto);
+
+            assertNotNull(productDto);
+            assertEquals(newProductName, productDto.getProductName());
+        }
+
+        @Test
+        public void updateProduct_productNotFoundTest() {
+
+            ProductDto productDto = ProductFactory.getProductDto();
+            doReturn(Optional.empty())
+                    .when(productRepository)
+                    .findById(anyString());
+
+            assertThrows(
+                    ProductNotFoundException.class,
+                    () -> productService.updateProduct("productCode", productDto)
             );
         }
     }

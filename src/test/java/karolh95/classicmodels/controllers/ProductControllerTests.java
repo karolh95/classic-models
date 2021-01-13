@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import karolh95.classicmodels.dto.ProductDto;
 import karolh95.classicmodels.exceptions.ProductAlreadyExistsException;
+import karolh95.classicmodels.exceptions.ProductNotFoundException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.services.ProductService;
 import karolh95.classicmodels.utils.ProductFactory;
@@ -88,6 +89,46 @@ public class ProductControllerTests {
             return post(API)
                     .content(json.getBytes())
                     .contentType(MediaType.APPLICATION_JSON_VALUE);
+        }
+    }
+
+    @Nested
+    @DisplayName("updateProduct")
+    class UpdateProductTests {
+
+        private static final String API = "/api/productlines/productLine/products/productCode";
+
+        @Test
+        public void updateProductTest() throws Exception {
+
+            ProductDto productDto = ProductFactory.getProductDto();
+            doReturn(productDto)
+                    .when(productService)
+                    .updateProduct(anyString(), any(ProductDto.class));
+
+            mvc.perform(updateProduct(productDto))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        public void updateProductTest_productNotFoundTest() throws Exception {
+
+            ProductDto productDto = ProductFactory.getProductDto();
+            doThrow(ProductNotFoundException.class)
+                    .when(productService)
+                    .updateProduct(anyString(), any(ProductDto.class));
+
+            mvc.perform(updateProduct(productDto))
+                    .andExpect(status().isNotFound())
+                    .andExpect(status().reason(ProductNotFoundException.MESSAGE));
+        }
+
+        private RequestBuilder updateProduct(ProductDto productDto) throws JsonProcessingException {
+
+            String content = mapper.writeValueAsString(productDto);
+            return post(API)
+                    .content(content)
+                    .contentType(MediaType.APPLICATION_JSON);
         }
     }
 }
