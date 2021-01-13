@@ -18,8 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 
+import static karolh95.classicmodels.utils.ArgumentMatchersAdapter.anyProductDto;
 import static karolh95.classicmodels.utils.ResultMatcherAdapter.equalTo;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -51,7 +51,7 @@ public class ProductControllerTests {
 
             doReturn(productDto)
                     .when(productService)
-                    .saveProduct(anyString(), any(ProductDto.class));
+                    .saveProduct(anyString(), anyProductDto());
 
             mvc.perform(saveProduct(productDto))
                     .andExpect(status().isOk())
@@ -63,7 +63,7 @@ public class ProductControllerTests {
 
             doThrow(ProductlineNotFoundException.class)
                     .when(productService)
-                    .saveProduct(anyString(), any(ProductDto.class));
+                    .saveProduct(anyString(), anyProductDto());
 
             mvc.perform(saveProduct(productDto))
                     .andExpect(status().isNotFound())
@@ -75,7 +75,7 @@ public class ProductControllerTests {
 
             doThrow(ProductAlreadyExistsException.class)
                     .when(productService)
-                    .saveProduct(anyString(), any(ProductDto.class));
+                    .saveProduct(anyString(), anyProductDto());
 
             mvc.perform(saveProduct(productDto))
                     .andExpect(status().isBadRequest())
@@ -104,7 +104,7 @@ public class ProductControllerTests {
             ProductDto productDto = ProductFactory.getProductDto();
             doReturn(productDto)
                     .when(productService)
-                    .updateProduct(anyString(), any(ProductDto.class));
+                    .updateProduct(anyString(), anyProductDto());
 
             mvc.perform(updateProduct(productDto))
                     .andExpect(status().isOk());
@@ -116,7 +116,7 @@ public class ProductControllerTests {
             ProductDto productDto = ProductFactory.getProductDto();
             doThrow(ProductNotFoundException.class)
                     .when(productService)
-                    .updateProduct(anyString(), any(ProductDto.class));
+                    .updateProduct(anyString(), anyProductDto());
 
             mvc.perform(updateProduct(productDto))
                     .andExpect(status().isNotFound())

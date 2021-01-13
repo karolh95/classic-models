@@ -17,8 +17,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
+import static karolh95.classicmodels.utils.ArgumentMatchersAdapter.anyProduct;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -53,11 +53,11 @@ public class ProductServiceTests {
                 newProduct.setProductline(ProductlineFactory.getProductline());
                 return null;
             }).when(productlineService)
-                    .setProductline(anyString(), any(Product.class));
+                    .setProductline(anyString(), anyProduct());
 
             doReturn(product)
                     .when(productRepository)
-                    .save(any(Product.class));
+                    .save(anyProduct());
 
             ProductDto productDto = ProductFactory.getProductDto();
 
@@ -92,7 +92,7 @@ public class ProductServiceTests {
 
             doThrow(ProductlineNotFoundException.class)
                     .when(productlineService)
-                    .setProductline(anyString(), any(Product.class));
+                    .setProductline(anyString(), anyProduct());
 
             ProductDto productDto = ProductFactory.getProductDto();
 
@@ -119,7 +119,7 @@ public class ProductServiceTests {
                     .findById(anyString());
             doReturn(product)
                     .when(productRepository)
-                    .save(any(Product.class));
+                    .save(anyProduct());
 
             ProductDto productDto = ProductFactory.getProductDto();
             productDto.setProductName(newProductName);

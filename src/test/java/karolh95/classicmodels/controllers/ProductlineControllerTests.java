@@ -22,15 +22,11 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 
 import java.util.List;
 
+import static karolh95.classicmodels.utils.ArgumentMatchersAdapter.anyProductlineDto;
 import static karolh95.classicmodels.utils.ResultMatcherAdapter.equalTo;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -110,7 +106,7 @@ public class ProductlineControllerTests {
 
             doReturn(dto)
                     .when(service)
-                    .saveProductline(any(ProductlineDTO.class));
+                    .saveProductline(anyProductlineDto());
 
             mvc.perform(saveProductline(dto))
                     .andExpect(status().isOk())
@@ -126,7 +122,7 @@ public class ProductlineControllerTests {
 
             doThrow(ProductlineAlreadyExistsException.class)
                     .when(service)
-                    .saveProductline(any(ProductlineDTO.class));
+                    .saveProductline(anyProductlineDto());
 
             mvc.perform(saveProductline(dto))
                     .andExpect(status().isBadRequest())
@@ -186,7 +182,7 @@ public class ProductlineControllerTests {
             ProductlineDTO productlineDTO = ProductlineFactory.getPoductlineDto();
             doReturn(productlineDTO)
                     .when(service)
-                    .updateProductline(anyString(), any(ProductlineDTO.class));
+                    .updateProductline(anyString(), anyProductlineDto());
 
             mvc.perform(updateProductline(productlineDTO))
                     .andExpect(status().isOk());
@@ -198,7 +194,7 @@ public class ProductlineControllerTests {
             ProductlineDTO productlineDTO = ProductlineFactory.getPoductlineDto();
             doThrow(ProductlineNotFoundException.class)
                     .when(service)
-                    .updateProductline(anyString(), any(ProductlineDTO.class));
+                    .updateProductline(anyString(), anyProductlineDto());
 
             mvc.perform(updateProductline(productlineDTO))
                     .andExpect(status().isNotFound())

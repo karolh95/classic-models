@@ -18,8 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
+import static karolh95.classicmodels.utils.ArgumentMatchersAdapter.anyProductline;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -53,7 +53,7 @@ public class ProductlineServiceTests {
                     .existsById(anyString());
             doReturn(productline)
                     .when(productlineRepository)
-                    .save(any(Productline.class));
+                    .save(anyProductline());
 
             dto = productlineService.saveProductline(dto);
 
@@ -108,7 +108,7 @@ public class ProductlineServiceTests {
                     .findById(anyString());
             doReturn(productline)
                     .when(productlineRepository)
-                    .save(any(Productline.class));
+                    .save(anyProductline());
 
             dto.setTextDescription(newTEXT);
             dto.setHtmlDescription(newHTML);
@@ -216,7 +216,7 @@ public class ProductlineServiceTests {
             productlineService.deleteProductline(productline.getProductLine());
 
             verify(productlineRepository, times(1))
-                    .delete(any(Productline.class));
+                    .delete(anyProductline());
         }
 
         @Test
