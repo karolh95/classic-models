@@ -34,6 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Product Controller Tests")
 public class ProductControllerTests {
 
+    private static final String API = "/api/productlines/productLine/products";
+
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
@@ -53,7 +55,7 @@ public class ProductControllerTests {
                 .when(productService)
                 .findAllProducts(anyString(), any(Pageable.class));
 
-        mvc.perform(get("/api/productlines/productLine/products"))
+        mvc.perform(get(API))
                 .andExpect(status().isOk())
                 .andExpect(equalTo("first", true))
                 .andExpect(equalTo("last", true))
@@ -67,8 +69,6 @@ public class ProductControllerTests {
     @Nested
     @DisplayName("saveProduct")
     class SaveProductTests {
-
-        private static final String API = "/api/productlines/productLine/products";
 
         private final ProductDto productDto = ProductFactory.getProductDto();
 
@@ -122,8 +122,6 @@ public class ProductControllerTests {
     @DisplayName("updateProduct")
     class UpdateProductTests {
 
-        private static final String API = "/api/productlines/productLine/products/productCode";
-
         @Test
         public void updateProductTest() throws Exception {
 
@@ -152,7 +150,7 @@ public class ProductControllerTests {
         private RequestBuilder updateProduct(ProductDto productDto) throws JsonProcessingException {
 
             String content = mapper.writeValueAsString(productDto);
-            return post(API)
+            return post(API + "/productCode")
                     .content(content)
                     .contentType(MediaType.APPLICATION_JSON);
         }
@@ -162,7 +160,7 @@ public class ProductControllerTests {
     @DisplayName("findProduct")
     class FindProductTests {
 
-        private static final String API = "/api/productlines/productLine/products/productCode";
+        private static final String URL = API + "/productCode";
 
         @Test
         public void findProductTest() throws Exception {
@@ -171,7 +169,7 @@ public class ProductControllerTests {
                     .when(productService)
                     .findProductByProductCode(anyString());
 
-            mvc.perform(get(API))
+            mvc.perform(get(URL))
                     .andExpect(status().isOk());
         }
 
@@ -182,7 +180,7 @@ public class ProductControllerTests {
                     .when(productService)
                     .findProductByProductCode(anyString());
 
-            mvc.perform(get(API))
+            mvc.perform(get(URL))
                     .andExpect(status().isNotFound())
                     .andExpect(status().reason(ProductNotFoundException.MESSAGE));
         }
@@ -192,7 +190,7 @@ public class ProductControllerTests {
     @DisplayName("deleteProduct")
     class DeleteProduct {
 
-        private static final String API = "/api/productlines/productLine/products/productCode";
+        private static final String URL = API + "/productCode";
 
         @Test
         public void deleteProductTest() throws Exception {
@@ -201,7 +199,7 @@ public class ProductControllerTests {
                     .when(productService)
                     .deleteProduct(anyString());
 
-            mvc.perform(delete(API))
+            mvc.perform(delete(URL))
                     .andExpect(status().isNoContent());
         }
 
@@ -212,7 +210,7 @@ public class ProductControllerTests {
                     .when(productService)
                     .deleteProduct(anyString());
 
-            mvc.perform(delete(API))
+            mvc.perform(delete(URL))
                     .andExpect(status().isNotFound())
                     .andExpect(status().reason(ProductNotFoundException.MESSAGE));
         }
