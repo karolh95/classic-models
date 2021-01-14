@@ -21,10 +21,8 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import static karolh95.classicmodels.utils.ArgumentMatchersAdapter.anyProductDto;
 import static karolh95.classicmodels.utils.ResultMatcherAdapter.equalTo;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
@@ -158,6 +156,36 @@ public class ProductControllerTests {
                     .findProductByProductCode(anyString());
 
             mvc.perform(get(API))
+                    .andExpect(status().isNotFound())
+                    .andExpect(status().reason(ProductNotFoundException.MESSAGE));
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteProduct")
+    class DeleteProduct {
+
+        private static final String API = "/api/productlines/productLine/products/productCode";
+
+        @Test
+        public void deleteProductTest() throws Exception {
+
+            doNothing()
+                    .when(productService)
+                    .deleteProduct(anyString());
+
+            mvc.perform(delete(API))
+                    .andExpect(status().isNoContent());
+        }
+
+        @Test
+        public void deleteProduct_productNotFoundTest() throws Exception {
+
+            doThrow(ProductNotFoundException.class)
+                    .when(productService)
+                    .deleteProduct(anyString());
+
+            mvc.perform(delete(API))
                     .andExpect(status().isNotFound())
                     .andExpect(status().reason(ProductNotFoundException.MESSAGE));
         }

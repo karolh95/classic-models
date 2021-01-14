@@ -174,4 +174,35 @@ public class ProductServiceTests {
             );
         }
     }
+
+    @Nested
+    @DisplayName("deleteProduct")
+    class DeleteProductTests {
+
+        @Test
+        public void deleteProductTest() {
+
+            doReturn(Optional.of(ProductFactory.getProduct()))
+                    .when(productRepository)
+                    .findById(anyString());
+
+            productService.deleteProduct("productCode");
+
+            verify(productRepository, times(1))
+                    .delete(anyProduct());
+        }
+
+        @Test
+        public void deleteProduct_productNotFoundTest() {
+
+            doReturn(Optional.empty())
+                    .when(productRepository)
+                    .findById(anyString());
+
+            assertThrows(
+                    ProductNotFoundException.class,
+                    () -> productService.deleteProduct("productCode")
+            );
+        }
+    }
 }

@@ -43,6 +43,12 @@ public class ProductService {
         return productMapper.map(product);
     }
 
+    public void deleteProduct(String productCode) {
+
+        Product product = findByProductCode(productCode);
+        productRepository.delete(product);
+    }
+
     private Product findByProductCode(String productCode) {
         return productRepository.findById(productCode)
                 .orElseThrow(ProductNotFoundException::new);

@@ -3,6 +3,7 @@ package karolh95.classicmodels.controllers;
 import karolh95.classicmodels.dto.ProductDto;
 import karolh95.classicmodels.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,5 +26,11 @@ public class ProductController {
     @GetMapping("{productCode}")
     public ProductDto getProduct(@PathVariable String productLine, @PathVariable String productCode) {
         return productService.findProductByProductCode(productCode);
+    }
+
+    @DeleteMapping("{productCode}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProduct(@PathVariable String productCode) {
+        this.productService.deleteProduct(productCode);
     }
 }
