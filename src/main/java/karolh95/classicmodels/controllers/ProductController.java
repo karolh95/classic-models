@@ -3,6 +3,8 @@ package karolh95.classicmodels.controllers;
 import karolh95.classicmodels.dto.ProductDto;
 import karolh95.classicmodels.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,11 @@ public class ProductController {
     @PostMapping("{productCode}")
     public ProductDto updateProduct(@PathVariable String productLine, @PathVariable String productCode, @RequestBody ProductDto productDto) {
         return productService.updateProduct(productCode, productDto);
+    }
+
+    @GetMapping
+    public Page<ProductDto> getAllProducts(@PathVariable String productLine, Pageable pageable) {
+        return productService.findAllProducts(productLine, pageable);
     }
 
     @GetMapping("{productCode}")

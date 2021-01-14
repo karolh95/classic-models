@@ -7,6 +7,8 @@ import karolh95.classicmodels.mappers.ProductMapper;
 import karolh95.classicmodels.models.Product;
 import karolh95.classicmodels.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,6 +43,11 @@ public class ProductService {
     public ProductDto findProductByProductCode(String productCode) {
         Product product = findByProductCode(productCode);
         return productMapper.map(product);
+    }
+
+    public Page<ProductDto> findAllProducts(String productLine, Pageable pageable) {
+        return productRepository.findAllByProductLine(productLine, pageable)
+                .map(productMapper::map);
     }
 
     public void deleteProduct(String productCode) {

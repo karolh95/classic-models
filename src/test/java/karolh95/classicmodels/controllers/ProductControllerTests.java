@@ -14,9 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+
+import java.util.List;
 
 import static karolh95.classicmodels.utils.ArgumentMatchersAdapter.anyProductDto;
 import static karolh95.classicmodels.utils.ResultMatcherAdapter.equalTo;
@@ -36,6 +41,28 @@ public class ProductControllerTests {
 
     @MockBean
     private ProductService productService;
+
+    @Test
+    public void getAllProductsTest() throws Exception {
+
+        Pageable pageable = PageRequest.of(0, 10);
+        ProductDto dto = ProductFactory.getProductDto();
+        List<ProductDto> list = List.of(dto, dto, dto);
+
+        doReturn(new PageImpl<>(list, pageable, list.size()))
+                .when(productService)
+                .findAllProducts(anyString(), any(Pageable.class));
+
+        mvc.perform(get("/api/productlines/productLine/products"))
+                .andExpect(status().isOk())
+                .andExpect(equalTo("first", true))
+                .andExpect(equalTo("last", true))
+                .andExpect(equalTo("empty", false))
+                .andExpect(equalTo("totalPages", 1))
+                .andExpect(equalTo("totalElements", list.size()))
+                .andExpect(equalTo("size", pageable.getPageSize()))
+                .andExpect(equalTo("number", pageable.getPageNumber()));
+    }
 
     @Nested
     @DisplayName("saveProduct")
