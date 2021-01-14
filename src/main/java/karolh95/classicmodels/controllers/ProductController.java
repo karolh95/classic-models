@@ -7,22 +7,22 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api")
+@RequestMapping("api/productlines/{productLine}/products")
 public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping("productlines/{productLine}/products")
+    @PostMapping
     public ProductDto saveProduct(@PathVariable String productLine, @RequestBody ProductDto product) {
         return productService.saveProduct(productLine, product);
     }
 
-    @PostMapping("productlines/{productLine}/products/{productCode}")
+    @PostMapping("{productCode}")
     public ProductDto updateProduct(@PathVariable String productLine, @PathVariable String productCode, @RequestBody ProductDto productDto) {
         return productService.updateProduct(productCode, productDto);
     }
 
-    @GetMapping("productlines/{productLine}/products/{productCode}")
+    @GetMapping("{productCode}")
     public ProductDto getProduct(@PathVariable String productLine, @PathVariable String productCode) {
         return productService.findProductByProductCode(productCode);
     }
