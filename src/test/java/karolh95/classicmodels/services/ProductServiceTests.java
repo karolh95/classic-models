@@ -5,6 +5,7 @@ import karolh95.classicmodels.exceptions.ProductAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductNotFoundException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.models.Product;
+import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductRepository;
 import karolh95.classicmodels.utils.ProductFactory;
 import karolh95.classicmodels.utils.ProductlineFactory;
@@ -43,17 +44,14 @@ public class ProductServiceTests {
         public void saveProductTest() {
 
             Product product = ProductFactory.getProduct();
-
+            Productline productline = ProductlineFactory.getProductline();
             doReturn(false)
                     .when(productRepository)
                     .existsById(anyString());
 
-            doAnswer(invocation -> {
-                Product newProduct = invocation.getArgument(1);
-                newProduct.setProductline(ProductlineFactory.getProductline());
-                return null;
-            }).when(productlineService)
-                    .setProductline(anyString(), anyProduct());
+            doReturn(productline)
+                    .when(productlineService)
+                    .findByProductline(anyString());
 
             doReturn(product)
                     .when(productRepository)
@@ -92,7 +90,7 @@ public class ProductServiceTests {
 
             doThrow(ProductlineNotFoundException.class)
                     .when(productlineService)
-                    .setProductline(anyString(), anyProduct());
+                    .findByProductline(anyString());
 
             ProductDto productDto = ProductFactory.getProductDto();
 

@@ -4,7 +4,6 @@ import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.exceptions.ProductlineAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
 import karolh95.classicmodels.mappers.ProductlineMapper;
-import karolh95.classicmodels.models.Product;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductlineRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,13 +57,7 @@ public class ProductlineService {
         productlineRepository.delete(productline);
     }
 
-    public void setProductline(String productLine, Product product) {
-
-        Productline productline = findByProductline(productLine);
-        product.setProductline(productline);
-    }
-
-    private Productline findByProductline(String productline) {
+    public Productline findByProductline(String productline) {
         return this.productlineRepository.findById(productline)
                 .orElseThrow(ProductlineNotFoundException::new);
     }

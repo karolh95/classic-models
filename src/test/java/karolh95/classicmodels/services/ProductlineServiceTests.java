@@ -3,10 +3,8 @@ package karolh95.classicmodels.services;
 import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.exceptions.ProductlineAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
-import karolh95.classicmodels.models.Product;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductlineRepository;
-import karolh95.classicmodels.utils.ProductFactory;
 import karolh95.classicmodels.utils.ProductlineFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -234,36 +232,32 @@ public class ProductlineServiceTests {
     }
 
     @Nested
-    @DisplayName("setProductline")
-    class SetProductlineTests {
+    @DisplayName("findByProductLine")
+    class FindByProductLineTests {
 
         @Test
-        public void setProductlineTest() {
+        public void findByProductLineTest() {
 
             Productline productline = ProductlineFactory.getProductline();
             doReturn(Optional.of(productline))
                     .when(productlineRepository)
                     .findById(anyString());
-            Product product = ProductFactory.getProduct();
 
-            productlineService.setProductline("productLine", product);
+            productline = productlineService.findByProductline("productLine");
 
-            Productline newProductline = product.getProductline();
-            assertNotNull(newProductline);
-            assertEquals(productline, newProductline);
+            assertNotNull(productline);
         }
 
         @Test
-        public void setProductline_productlineNotFoundTest() {
+        public void findByProductLine_productlineNotFoundTest() {
 
             doReturn(Optional.empty())
                     .when(productlineRepository)
                     .findById(anyString());
-            Product product = ProductFactory.getProduct();
 
             assertThrows(
                     ProductlineNotFoundException.class,
-                    () -> productlineService.setProductline("productLine", product)
+                    () -> productlineService.findByProductline("prductLine")
             );
         }
     }

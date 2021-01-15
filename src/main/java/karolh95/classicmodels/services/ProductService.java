@@ -5,6 +5,7 @@ import karolh95.classicmodels.exceptions.ProductAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductNotFoundException;
 import karolh95.classicmodels.mappers.ProductMapper;
 import karolh95.classicmodels.models.Product;
+import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,8 @@ public class ProductService {
             throw new ProductAlreadyExistsException();
 
         Product product = productMapper.map(productDto);
-        productlineService.setProductline(productLine, product);
+        Productline productline = productlineService.findByProductline(productLine);
+        product.setProductline(productline);
         product = productRepository.save(product);
 
         return productMapper.map(product);
