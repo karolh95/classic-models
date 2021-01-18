@@ -20,7 +20,7 @@ public class ProductController {
         return productService.saveProduct(productLine, product);
     }
 
-    @PostMapping("{productCode}")
+    @PutMapping("{productCode}")
     public ProductDto updateProduct(@PathVariable String productLine, @PathVariable String productCode, @RequestBody ProductDto productDto) {
         return productService.updateProduct(productCode, productDto);
     }

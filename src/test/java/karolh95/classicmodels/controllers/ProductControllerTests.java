@@ -150,7 +150,7 @@ public class ProductControllerTests {
         private RequestBuilder updateProduct(ProductDto productDto) throws JsonProcessingException {
 
             String content = mapper.writeValueAsString(productDto);
-            return post(API + "/productCode")
+            return put(API + "/productCode")
                     .content(content)
                     .contentType(MediaType.APPLICATION_JSON);
         }
