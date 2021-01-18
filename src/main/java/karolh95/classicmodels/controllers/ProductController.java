@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/productlines/{productLine}/products")
@@ -16,12 +18,12 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ProductDto saveProduct(@PathVariable String productLine, @RequestBody ProductDto product) {
+    public ProductDto saveProduct(@PathVariable String productLine, @Valid @RequestBody ProductDto product) {
         return productService.saveProduct(productLine, product);
     }
 
     @PutMapping("{productCode}")
-    public ProductDto updateProduct(@PathVariable String productLine, @PathVariable String productCode, @RequestBody ProductDto productDto) {
+    public ProductDto updateProduct(@PathVariable String productLine, @PathVariable String productCode, @Valid @RequestBody ProductDto productDto) {
         return productService.updateProduct(productCode, productDto);
     }
 
