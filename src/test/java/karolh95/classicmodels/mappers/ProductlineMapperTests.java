@@ -5,20 +5,14 @@ import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.utils.ProductlineFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mapstruct.factory.Mappers;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 @DisplayName("Productline Mapper Tests")
 public class ProductlineMapperTests {
 
-    @Autowired
-    private ProductlineMapper mapper;
+    private final ProductlineMapper mapper = Mappers.getMapper(ProductlineMapper.class);
 
     @Test
     public void mapProductlineToDtoTest() {
