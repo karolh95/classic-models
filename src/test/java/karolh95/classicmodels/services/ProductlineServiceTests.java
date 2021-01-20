@@ -3,6 +3,7 @@ package karolh95.classicmodels.services;
 import karolh95.classicmodels.dto.ProductlineDTO;
 import karolh95.classicmodels.exceptions.ProductlineAlreadyExistsException;
 import karolh95.classicmodels.exceptions.ProductlineNotFoundException;
+import karolh95.classicmodels.mappers.ProductlineMapper;
 import karolh95.classicmodels.models.Productline;
 import karolh95.classicmodels.repositories.ProductlineRepository;
 import karolh95.classicmodels.utils.ProductlineFactory;
@@ -10,9 +11,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -21,15 +25,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 @DisplayName("Productline Service Tests")
 public class ProductlineServiceTests {
 
-    @Autowired
+    @InjectMocks
     private ProductlineService productlineService;
 
-    @MockBean
+    @Mock
     private ProductlineRepository productlineRepository;
+
+    @Spy
+    private final ProductlineMapper mapper = Mappers.getMapper(ProductlineMapper.class);
 
     @Nested
     @DisplayName("saveProductline")
