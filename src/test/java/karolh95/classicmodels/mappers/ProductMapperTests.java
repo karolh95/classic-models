@@ -5,21 +5,16 @@ import karolh95.classicmodels.models.Product;
 import karolh95.classicmodels.utils.ProductFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mapstruct.factory.Mappers;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 @DisplayName("Product Mapper Tests")
 public class ProductMapperTests {
 
-    @Autowired
-    private ProductMapper mapper;
+    private final ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
 
     @Test
     public void mapProductToDtoTest() {
